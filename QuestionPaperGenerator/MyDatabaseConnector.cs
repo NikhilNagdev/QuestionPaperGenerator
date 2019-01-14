@@ -18,7 +18,7 @@ namespace QuestionPaperGenerator
         /// </returns>
         public static MySqlConnection GetDatabaseConnection()
             {
-                String connectionString = "datasource=127.0.0.1;username=nikhil;password=Nikhil@1212;database=qpgenerator;SslMode=none";
+                String connectionString = "datasource=127.0.0.1;username=nikhil;password=nikhil1234;database=qpgenerator;SslMode=none";
                 MySqlConnection databaseConnection = new MySqlConnection(connectionString);
                 try
                 {
