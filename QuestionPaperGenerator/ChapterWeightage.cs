@@ -5,10 +5,10 @@ using System.Windows.Forms;
 
 namespace QuestionPaperGenerator
 {
-    class ChapterWeightage
+    public class ChapterWeightage
     {
         //Constructor
-        ChapterWeightage()
+        public ChapterWeightage()
         {
             databaseConnection = MyDatabaseConnector.GetDatabaseConnection();
             chapterWeightages = new List<int>();
@@ -16,7 +16,7 @@ namespace QuestionPaperGenerator
 
         public int getChapterWeightage(int chapterNo)
         {
-            String query = "SELECT wightage FROM javaweightage where chapterNo = " + chapterNo;
+            String query = "SELECT weightage FROM javachapters where chapterNo = " + chapterNo;
             MySqlCommand command = new MySqlCommand(query, databaseConnection);
             MySqlDataReader reader = null;
             try
@@ -37,33 +37,65 @@ namespace QuestionPaperGenerator
             return 0;
         }
 
-        public List<int> getAllChapterWeightages()
+        //public List<int> getAllChapterWeightages()
+        //{
+        //    String query = "SELECT weightage FROM javachapters";
+        //    MySqlCommand command = new MySqlCommand(query, databaseConnection);
+        //    MySqlDataReader reader = null;
+        //    try
+        //    {
+        //        reader = command.ExecuteReader();
+        //        if (reader.HasRows)
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                chapterWeightages.Add(reader.GetInt32(0));
+        //            }
+        //        }
+        //        return chapterWeightages;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        MessageBox.Show("Exception: " + e);
+        //    }
+        //    return null;
+        //}
+
+        public Dictionary<int, int> getAllChapterWeightages(List<int> chapters)
         {
-            String query = "SELECT wightage FROM javaweightage";
-            MySqlCommand command = new MySqlCommand(query, databaseConnection);
+            Dictionary<int, int> chapterWeightages = new Dictionary<int, int>();
             MySqlDataReader reader = null;
-            try
+            for (int i = 0; i<chapters.Count; i++)
             {
-                reader = command.ExecuteReader();
-                if (reader.HasRows)
+                String query = "SELECT * FROM javachapters where chapterNo = " + chapters[i];
+                MySqlCommand command = new MySqlCommand(query, databaseConnection);
+                try
                 {
-                    while (reader.Read())
+                    reader = command.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        chapterWeightages.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            chapterWeightages.Add(reader.GetInt32(1), reader.GetInt32(2));
+                            //Console.WriteLine(i + "      " +reader.GetInt32(1) + "     "  +  reader.GetInt32(2));
+                        }
                     }
+                    reader.Close();
                 }
-                return chapterWeightages;
+                catch (Exception e)
+                {
+                    MessageBox.Show("Exception: " + e);
+                }
             }
-            catch (Exception e)
-            {
-                MessageBox.Show("Exception: " + e);
-            }
-            return null;
+            
+            return chapterWeightages;
         }
+        
 
         //Variable declarations
         private MySqlConnection databaseConnection = null;
         private List<int> chapterWeightages = null;
         //End of variable declarations
+
     }
 }

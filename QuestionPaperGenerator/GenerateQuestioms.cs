@@ -15,6 +15,7 @@ namespace QuestionPaperGenerator
             questionFetcher = new QuestionFetcher();
             questions = new List<string>();
             random = new Random();
+            chapterWeightage = new Dictionary<int, int>();
         }
 
 
@@ -24,11 +25,6 @@ namespace QuestionPaperGenerator
             //gq.GenerateEightMarksQuestions();
             //gq.GenerateSixMarksQuestions();
             //gq.GenerateFourMarksQuestions();
-            Console.WriteLine("----------------------------------------------");
-            gq.GenerateRandomQuestions(8, 4);
-            Console.WriteLine("----------------------------------------------");
-            gq.GenerateRandomQuestions(6, 2);
-            Console.WriteLine("----------------------------------------------");
             gq.GenerateRandomQuestions(4, 14);
             Console.Read();
         }
@@ -36,6 +32,8 @@ namespace QuestionPaperGenerator
         /*---------------------------------------------------------------------------------------------------
                                                 METHODS
         ---------------------------------------------------------------------------------------------------*/
+
+
         public void GenerateEightMarksQuestions()
         {
             chapters = chapter.GetRandomChapters();
@@ -97,24 +95,76 @@ namespace QuestionPaperGenerator
         public void GenerateRandomQuestions(int marks, int noOfQuestions)
         {
             chapters = chapter.GetRandomChapters();
-            List<String> questions = new List<string>();
-            int i = 0;
-            while (noOfQuestions!=0)
+            /*for(int k = 0; k < chapters.Count; k++)
             {
-                chapterNo = chapters[i++];
-                Console.WriteLine("Chapter no: " + chapterNo);
-                questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks));
-                noOfQuestions--;
-                if (i==6)
+                Console.WriteLine(chapters[k]);
+            }*/
+            chapterWeightage = weightage.getAllChapterWeightages(chapters);
+            /*for(int k = 1; k < chapters.Count+1; k++)
+            {
+                Console.WriteLine(chapterWeightage[k]);
+            }*/
+            List<String> questions = new List<string>();
+            int i = chapters[0];
+            Console.WriteLine("i" + i);
+            while(totalMarks != 0)
+            {
+                if (i >= 6)
                 {
-                    i = 0;
+                    i = chapters[0];
                 }
+                Console.WriteLine("i" + i);
+                Console.WriteLine(chapterWeightage[i]);
+                if (chapterWeightage[i] != 0)
+                {
+                    if (chapterWeightage[i] % 6 == 0 && chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                    {
+                        marks = 6;
+                        Console.WriteLine("HELLOOOO" + chapterWeightage[i]);
+                        //Console.WriteLine(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        chapterWeightage[i] -= marks;
+                    }
+                    else
+                    {
+                        marks = values[random.Next(values.Length)];
+                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        chapterWeightage[i] -= marks;
+                    }
+                    totalMarks -= marks;
+                    i++;
+                }
+                
             }
+            //while (noOfQuestions!=0)
+            //{
+            //    chapterNo = chapters[i++];
+            //    Console.WriteLine("Chapter no: " + chapterNo);
+            //    chapterWeightage[chapterNo] -= marks;
+            //    /*foreach (KeyValuePair<int, int> kvp in chapterWeightage)
+            //    {
+            //        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            //    }*/
+            //    if (chapterWeightage[chapterNo] <= 2)
+            //    {
+            //        chapters.Remove(i);
+            //        Console.WriteLine("BREAK: "  + chapterWeightage[chapterNo]);
+            //        //break;
+            //    }
+                    
+            //    Console.WriteLine("Chapter no: " + chapterNo);
+            //    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks)); 
+            //    noOfQuestions--;
+            //    if (i==6)
+            //    {
+            //        i = 0;
+            //    }
+            //}
 
             i = 0;
+           
             while (i < questions.Count)
             {
-                //Console.WriteLine(questions[random.Next(0,questions.Count+1)]);
                 Console.WriteLine(questions[i]);
                 i++;
             }
@@ -122,12 +172,15 @@ namespace QuestionPaperGenerator
 
         //Variable declarations
         private int chapterNo=0;
-        private int chapterWeightage;
         private Chapter chapter;
         private List<int> chapters;
         private QuestionFetcher questionFetcher;
         private List<String> questions;
         private Random random;
+        private Dictionary<int, int> chapterWeightage = null;
+        private ChapterWeightage weightage = new ChapterWeightage();
+        int totalMarks = 100;
+        int[] values =  {4, 8};
         //End of variable declarations
     }
 }

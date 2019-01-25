@@ -16,6 +16,7 @@ namespace QuestionPaperGenerator
         {
             databaseConnection = MyDatabaseConnector.GetDatabaseConnection();
             random = new Random();
+            chapterWeightage = new ChapterWeightage();
         }
 
         /*---------------------------------------------------------------------------------------------------
@@ -87,8 +88,12 @@ namespace QuestionPaperGenerator
             MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
             try
             {
-                dataReader.Read();
-                return dataReader.GetString(0);
+                String str = "";
+                if (dataReader.Read())
+                {
+                    str =  dataReader.GetString(0);
+                }
+                return str;
             }
             finally
             {
@@ -99,26 +104,34 @@ namespace QuestionPaperGenerator
         public int GetFirstQuestionId(int chapterNo, int marks)
         {
             String query = "SELECT qId FROM javaquestions WHERE chapterNo = "+  chapterNo + " AND marks = " + marks + " LIMIT 1";
-            MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
-            dataReader.Read();
-            int id = dataReader.GetInt32(0);
-            dataReader.Close();
+            Console.WriteLine(query);
+            MySqlDataReader reader = new MySqlCommand(query, databaseConnection).ExecuteReader();
+            int id = -1;
+            if (reader.Read())
+            {
+                id = reader.GetInt32(0);
+            }
+            reader.Close();
             return id;
         }
 
         public int GetLastQuestionId(int chapterNo, int marks)
         {
-            String query = "SELECT qid FROM javaquestions WHERE qId = (SELECT MAX(qId) FROM javaquestions WHERE chapterNo = " + chapterNo + " AND marks = " + marks + ")";
-            MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
-            dataReader.Read();
-            int id = dataReader.GetInt32(0);
-            dataReader.Close();
+            String query = "SELECT qid FROM javaquestions WHERE chapterNo = " + chapterNo + " AND marks = " + marks ;
+            Console.WriteLine(query);
+            MySqlDataReader reader = new MySqlCommand(query, databaseConnection).ExecuteReader();
+            reader.Read();
+            int id = -1;
+            if (reader.Read())
+            {
+                id = reader.GetInt32(0);
+            }
+            reader.Close();
             return id;
         }
 
         static void Main()
         {
-            //new QuestionFetcher().GetQuestions(6, 2, 4);
             Console.WriteLine(new QuestionFetcher().GetRandomQuestion(2, 6));
             Console.Read();
         }
@@ -126,6 +139,7 @@ namespace QuestionPaperGenerator
         //Variable declarations
         private MySqlConnection databaseConnection = null;
         private Random random;
+        private ChapterWeightage chapterWeightage = null;
         //End of variable declarations
     }
 }
