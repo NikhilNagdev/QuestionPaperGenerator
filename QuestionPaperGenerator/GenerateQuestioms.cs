@@ -123,7 +123,7 @@ namespace QuestionPaperGenerator
                     totalMarks -= marks;
                     Console.WriteLine("Marks remaining: " + totalMarks);
                 }
-                if(totalMarks < 0)
+                if (totalMarks < 0)
                 {
                     break;
                 }
