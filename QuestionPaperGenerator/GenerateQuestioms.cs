@@ -22,9 +22,6 @@ namespace QuestionPaperGenerator
         static void Main()
         {
             GenerateQuestions gq = new GenerateQuestions();
-            //gq.GenerateEightMarksQuestions();
-            //gq.GenerateSixMarksQuestions();
-            //gq.GenerateFourMarksQuestions();
             gq.GenerateRandomQuestions(4, 14);
             Console.Read();
         }
@@ -95,79 +92,104 @@ namespace QuestionPaperGenerator
         public void GenerateRandomQuestions(int marks, int noOfQuestions)
         {
             chapters = chapter.GetRandomChapters();
-            /*for(int k = 0; k < chapters.Count; k++)
+            for(int k = 0; k < chapters.Count; k++)
             {
                 Console.WriteLine(chapters[k]);
-            }*/
+            }
             chapterWeightage = weightage.getAllChapterWeightages(chapters);
-            /*for(int k = 1; k < chapters.Count+1; k++)
+            for(int k = 1; k < chapters.Count+1; k++)
             {
                 Console.WriteLine(chapterWeightage[k]);
-            }*/
+            }
             List<String> questions = new List<string>();
             int i = chapters[0];
-            Console.WriteLine("i" + i);
-            while(totalMarks != 0)
-            {
-                if (i >= 6)
-                {
-                    i = chapters[0];
-                }
-                Console.WriteLine("i" + i);
-                Console.WriteLine(chapterWeightage[i]);
-                if (chapterWeightage[i] != 0)
-                {
-                    if (chapterWeightage[i] % 6 == 0 && chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
-                    {
-                        marks = 6;
-                        Console.WriteLine("HELLOOOO" + chapterWeightage[i]);
-                        //Console.WriteLine(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                        chapterWeightage[i] -= marks;
-                    }
-                    else
-                    {
-                        marks = values[random.Next(values.Length)];
-                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                        chapterWeightage[i] -= marks;
-                    }
-                    totalMarks -= marks;
-                    i++;
-                }
-                
-            }
-            //while (noOfQuestions!=0)
-            //{
-            //    chapterNo = chapters[i++];
-            //    Console.WriteLine("Chapter no: " + chapterNo);
-            //    chapterWeightage[chapterNo] -= marks;
-            //    /*foreach (KeyValuePair<int, int> kvp in chapterWeightage)
-            //    {
-            //        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-            //    }*/
-            //    if (chapterWeightage[chapterNo] <= 2)
-            //    {
-            //        chapters.Remove(i);
-            //        Console.WriteLine("BREAK: "  + chapterWeightage[chapterNo]);
-            //        //break;
-            //    }
-                    
-            //    Console.WriteLine("Chapter no: " + chapterNo);
-            //    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks)); 
-            //    noOfQuestions--;
-            //    if (i==6)
-            //    {
-            //        i = 0;
-            //    }
-            //}
 
-            i = 0;
+
+            while (totalMarks != 0)
+            {
+                if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                {
+                    marks = 6;
+                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
+                    questions.Add(questionFetcher.GetRandomQuestion(chapters[i - 1], marks));
+                    totalMarks -= marks;
+                    Console.WriteLine("Marks remaining: " + totalMarks);
+                }
+                else
+                {
+                    marks = values[random.Next(values.Length)];
+                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
+                    questions.Add(questionFetcher.GetRandomQuestion(chapters[i - 1], marks));
+                    totalMarks -= marks;
+                    Console.WriteLine("Marks remaining: " + totalMarks);
+                }
+                if(totalMarks < 0)
+                {
+                    break;
+                }
+            }
+            
+
+                /*while(k++ < 10)
+                {
+                    if (i >= 6)
+                    {
+                        i = chapters[0];
+                    }
+                    Console.WriteLine("i" + i);
+                    Console.WriteLine(chapterWeightage[i]);
+                    if (chapterWeightage[i] != 0)
+                    {
+                        if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                        {
+                            marks = 6;
+                            Console.WriteLine("HELLOOOO" + chapterWeightage[i]);
+                            //Console.WriteLine(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                            questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                            chapterWeightage[i] -= marks;
+                        }
+                        else
+                        {
+                            marks = values[random.Next(values.Length)];
+                            questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                            chapterWeightage[i] -= marks;
+                        }
+                        totalMarks -= marks;
+                        i++;
+                    }
+                }*/
+                //while (noOfQuestions!=0)
+                //{
+                //    chapterNo = chapters[i++];
+                //    Console.WriteLine("Chapter no: " + chapterNo);
+                //    chapterWeightage[chapterNo] -= marks;
+                //    /*foreach (KeyValuePair<int, int> kvp in chapterWeightage)
+                //    {
+                //        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                //    }*/
+                //    if (chapterWeightage[chapterNo] <= 2)
+                //    {
+                //        chapters.Remove(i);
+                //        Console.WriteLine("BREAK: "  + chapterWeightage[chapterNo]);
+                //        //break;
+                //    }
+
+                //    Console.WriteLine("Chapter no: " + chapterNo);
+                //    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks)); 
+                //    noOfQuestions--;
+                //    if (i==6)
+                //    {
+                //        i = 0;
+                //    }
+                //}
+
+                i = 0;
            
-            while (i < questions.Count)
+            /*while (i < questions.Count)
             {
                 Console.WriteLine(questions[i]);
                 i++;
-            }
+            }*/
         }
 
         //Variable declarations
