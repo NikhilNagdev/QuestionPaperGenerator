@@ -103,25 +103,33 @@ namespace QuestionPaperGenerator
             }
             List<String> questions = new List<string>();
             int i = chapters[0];
-
-
             while (totalMarks != 0)
             {
-                if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                Console.WriteLine("I: " + i);
+                while(chapterWeightage[i] != 0)
                 {
-                    marks = 6;
-                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
+                    if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                    {
+                        marks = 6;
+                    }
+                    else
+                    {
+                        marks = values[random.Next(values.Length)];
+                    }
                     questions.Add(questionFetcher.GetRandomQuestion(chapters[i - 1], marks));
                     totalMarks -= marks;
                     Console.WriteLine("Marks remaining: " + totalMarks);
+                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
+                    chapterWeightage[i] -= marks;
+                    if (chapterWeightage[i] < 0)
+                        break;
                 }
-                else
+                i++;
+                if (chapterWeightage[i] < 0)
+                    break;
+                if (i >= 6)
                 {
-                    marks = values[random.Next(values.Length)];
-                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
-                    questions.Add(questionFetcher.GetRandomQuestion(chapters[i - 1], marks));
-                    totalMarks -= marks;
-                    Console.WriteLine("Marks remaining: " + totalMarks);
+                    i = chapters[0];
                 }
                 if (totalMarks < 0)
                 {
