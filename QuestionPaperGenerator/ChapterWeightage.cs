@@ -14,6 +14,7 @@ namespace QuestionPaperGenerator
             chapterWeightages = new List<int>();
         }
 
+        //Methods
         public int getChapterWeightage(int chapterNo)
         {
             String query = "SELECT weightage FROM javachapters where chapterNo = " + chapterNo;
@@ -26,7 +27,7 @@ namespace QuestionPaperGenerator
                 {
                     while (reader.Read())
                     {
-                        return(reader.GetInt32(0));
+                        return (reader.GetInt32(0));
                     }
                 }
             }
@@ -65,7 +66,7 @@ namespace QuestionPaperGenerator
         {
             Dictionary<int, int> chapterWeightages = new Dictionary<int, int>();
             MySqlDataReader reader = null;
-            for (int i = 0; i<chapters.Count; i++)
+            for (int i = 0; i < chapters.Count; i++)
             {
                 String query = "SELECT * FROM javachapters where chapterNo = " + chapters[i];
                 MySqlCommand command = new MySqlCommand(query, databaseConnection);
@@ -87,10 +88,10 @@ namespace QuestionPaperGenerator
                     MessageBox.Show("Exception: " + e);
                 }
             }
-            
+
             return chapterWeightages;
         }
-        
+
 
         //Variable declarations
         private MySqlConnection databaseConnection = null;

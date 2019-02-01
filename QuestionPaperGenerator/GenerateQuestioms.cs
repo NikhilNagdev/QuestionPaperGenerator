@@ -92,116 +92,116 @@ namespace QuestionPaperGenerator
         public void GenerateRandomQuestions(int marks, int noOfQuestions)
         {
             chapters = chapter.GetRandomChapters();
-            for(int k = 0; k < chapters.Count; k++)
+            for (int k = 0; k < chapters.Count; k++)
             {
                 Console.WriteLine(chapters[k]);
             }
             chapterWeightage = weightage.getAllChapterWeightages(chapters);
-            for(int k = 1; k < chapters.Count+1; k++)
+            for (int k = 1; k < chapters.Count + 1; k++)
             {
                 Console.WriteLine(chapterWeightage[k]);
             }
             List<String> questions = new List<string>();
-            int i = chapters[0];
+            int chapterNo = chapters[0], i = 0;
             while (totalMarks != 0)
             {
-                Console.WriteLine("I: " + i);
-                while(chapterWeightage[i] != 0)
+                Console.WriteLine("Chapter no: " + chapterNo + "Chapter weightage: " + chapterWeightage[chapterNo]);
+                while (chapterWeightage[chapterNo] != 0)
                 {
-                    if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
+                    if (chapterWeightage[chapterNo] % 8 != 0 && chapterWeightage[chapterNo] % 4 != 0)
                     {
                         marks = 6;
                     }
-                    else
+                    else if (chapterWeightage[chapterNo] >= 8)
                     {
                         marks = values[random.Next(values.Length)];
                     }
-                    questions.Add(questionFetcher.GetRandomQuestion(chapters[i - 1], marks));
+                    else
+                    {
+                        marks = 4;
+                    }
+                    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks));
                     totalMarks -= marks;
                     Console.WriteLine("Marks remaining: " + totalMarks);
-                    Console.WriteLine("Chapter weightage: " + chapterWeightage[i]);
-                    chapterWeightage[i] -= marks;
-                    if (chapterWeightage[i] < 0)
+                    Console.WriteLine("Chapter weightage: " + chapterWeightage[chapterNo]);
+                    chapterWeightage[chapterNo] -= marks;
+                    if (chapterWeightage[chapterNo] < 0)
                         break;
                 }
-                i++;
-                if (chapterWeightage[i] < 0)
-                    break;
                 if (i >= 6)
                 {
-                    i = chapters[0];
+                    chapterNo = chapters[i = 0];
                 }
+                chapterNo = chapters[i++];
                 if (totalMarks < 0)
                 {
                     break;
                 }
             }
-            
 
-                /*while(k++ < 10)
+
+            /*while(k++ < 10)
+            {
+                if (i >= 6)
                 {
-                    if (i >= 6)
+                    i = chapters[0];
+                }
+                Console.WriteLine("i" + i);
+                Console.WriteLine(chapterWeightage[i]);
+                if (chapterWeightage[i] != 0)
+                {
+                    if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
                     {
-                        i = chapters[0];
+                        marks = 6;
+                        Console.WriteLine("HELLOOOO" + chapterWeightage[i]);
+                        //Console.WriteLine(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        chapterWeightage[i] -= marks;
                     }
-                    Console.WriteLine("i" + i);
-                    Console.WriteLine(chapterWeightage[i]);
-                    if (chapterWeightage[i] != 0)
+                    else
                     {
-                        if (chapterWeightage[i] % 8 != 0 && chapterWeightage[i] % 4 != 0)
-                        {
-                            marks = 6;
-                            Console.WriteLine("HELLOOOO" + chapterWeightage[i]);
-                            //Console.WriteLine(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                            questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                            chapterWeightage[i] -= marks;
-                        }
-                        else
-                        {
-                            marks = values[random.Next(values.Length)];
-                            questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
-                            chapterWeightage[i] -= marks;
-                        }
-                        totalMarks -= marks;
-                        i++;
+                        marks = values[random.Next(values.Length)];
+                        questions.Add(questionFetcher.GetRandomQuestion(chapters[i], marks));
+                        chapterWeightage[i] -= marks;
                     }
-                }*/
-                //while (noOfQuestions!=0)
-                //{
-                //    chapterNo = chapters[i++];
-                //    Console.WriteLine("Chapter no: " + chapterNo);
-                //    chapterWeightage[chapterNo] -= marks;
-                //    /*foreach (KeyValuePair<int, int> kvp in chapterWeightage)
-                //    {
-                //        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-                //    }*/
-                //    if (chapterWeightage[chapterNo] <= 2)
-                //    {
-                //        chapters.Remove(i);
-                //        Console.WriteLine("BREAK: "  + chapterWeightage[chapterNo]);
-                //        //break;
-                //    }
+                    totalMarks -= marks;
+                    i++;
+                }
+            }*/
+            //while (noOfQuestions!=0)
+            //{
+            //    chapterNo = chapters[i++];
+            //    Console.WriteLine("Chapter no: " + chapterNo);
+            //    chapterWeightage[chapterNo] -= marks;
+            //    /*foreach (KeyValuePair<int, int> kvp in chapterWeightage)
+            //    {
+            //        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            //    }*/
+            //    if (chapterWeightage[chapterNo] <= 2)
+            //    {
+            //        chapters.Remove(i);
+            //        Console.WriteLine("BREAK: "  + chapterWeightage[chapterNo]);
+            //        //break;
+            //    }
 
-                //    Console.WriteLine("Chapter no: " + chapterNo);
-                //    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks)); 
-                //    noOfQuestions--;
-                //    if (i==6)
-                //    {
-                //        i = 0;
-                //    }
-                //}
-
-                i = 0;
-           
-            /*while (i < questions.Count)
+            //    Console.WriteLine("Chapter no: " + chapterNo);
+            //    questions.Add(questionFetcher.GetRandomQuestion(chapterNo, marks)); 
+            //    noOfQuestions--;
+            //    if (i==6)
+            //    {
+            //        i = 0;
+            //    }
+            //}
+            i = 0;
+            while (i < questions.Count)
             {
                 Console.WriteLine(questions[i]);
                 i++;
-            }*/
+            }
         }
 
         //Variable declarations
-        private int chapterNo=0;
+        private int chapterNo = 0;
         private Chapter chapter;
         private List<int> chapters;
         private QuestionFetcher questionFetcher;
@@ -210,7 +210,7 @@ namespace QuestionPaperGenerator
         private Dictionary<int, int> chapterWeightage = null;
         private ChapterWeightage weightage = new ChapterWeightage();
         int totalMarks = 100;
-        int[] values =  {4, 8};
+        int[] values = { 4, 8 };
         //End of variable declarations
     }
 }
