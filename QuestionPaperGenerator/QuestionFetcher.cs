@@ -19,6 +19,7 @@ namespace QuestionPaperGenerator
             random = new Random();
             chapterWeightage = new ChapterWeightage();
             priorityWithId = new Dictionary<int, int>();
+            questions = new List<int>();
         }
 
         /*---------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ namespace QuestionPaperGenerator
         ///     marks and chapter number.
         /// </returns>
         //SELECT qid FROM javaquestions WHERE qId = (SELECT MAX(qId) FROM javaquestions WHERE chapterNo = 2
-        public List<String> GetQuestions(int marks, int chapterNo, int noOfQuestions)
+        /*public List<String> GetQuestions(int marks, int chapterNo, int noOfQuestions)
         {
             int i = 0;
             HashSet<String> hashSet = new HashSet<String>();
@@ -77,32 +78,41 @@ namespace QuestionPaperGenerator
                 }
             }
             return list;
-        }
+        }*/
 
         //(int) Math.Round(random.NextDouble() * questions.Count-1)])
         public String GetRandomQuestion(int chapterNo, int marks)
         {
             int id = 0;
-            Console.WriteLine(GetFirstQuestionId(chapterNo, marks) + "     " + (GetLastQuestionId(chapterNo, marks) + 1) + "     " + id);
-            id = random.Next(GetFirstQuestionId(chapterNo, marks), GetLastQuestionId(chapterNo, marks)+1);
-            int id1 = GetFirstQuestionId(chapterNo, marks) + (int)Math.Round(random.NextDouble() * (GetLastQuestionId(chapterNo, marks)- GetFirstQuestionId(chapterNo, marks)));
-            String query = "SELECT question FROM javaquestions WHERE chapterNo = " + chapterNo + " AND qId = " + id + " AND marks = " + marks;
+            //Console.WriteLine(GetFirstQuestionId(chapterNo, marks) + "     " + (GetLastQuestionId(chapterNo, marks) + 1) + "     " + id);
+            //id = random.Next(GetFirstQuestionId(chapterNo, marks), GetLastQuestionId(chapterNo, marks)+1);
+            //int id1 = GetFirstQuestionId(chapterNo, marks) + (int)Math.Round(random.NextDouble() * (GetLastQuestionId(chapterNo, marks)- GetFirstQuestionId(chapterNo, marks)));
+            String query = "SELECT * FROM javaquestions WHERE chapterNo = " + chapterNo + " AND marks = " + marks + " AND priority = 10";
             MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
             String str = "";
             try
             {                
-                if (dataReader.Read())
-                    str =  dataReader.GetString(0);
+                while (dataReader.Read())
+                {
+                    Console.WriteLine("QUESTION ID: " + dataReader.GetInt32(0));
+                    priorityWithId.Add(dataReader.GetInt32(0), dataReader.GetInt32(4));
+                }
             }
             finally
             {
                 dataReader.Close();
             }
+            /*int i = 1;
+            while(i <= 10){
+                Console.WriteLine(priorityWithId[i++]);
+            }*/
             UpdatePriority(id);
+            str = GetQuestion(priorityWithId);
+            priorityWithId = new Dictionary<int, int>();
             return str;
         }
 
-        public int GetFirstQuestionId(int chapterNo, int marks)
+        /*public int GetFirstQuestionId(int chapterNo, int marks)
         {
             String query = "SELECT qId FROM javaquestions WHERE chapterNo = "+  chapterNo + " AND marks = " + marks + " LIMIT 1";
             Console.WriteLine(query);
@@ -130,6 +140,27 @@ namespace QuestionPaperGenerator
             }
             reader.Close();
             return id;
+        }*/
+
+        public String GetQuestion(Dictionary<int, int> priorityId)
+        {
+            List<int> qid = new List<int>();
+            foreach(int s in priorityWithId.Keys)
+            {
+                qid.Add(s);
+            }
+            int id = qid[random.Next(0, qid.Count)];
+            Console.WriteLine("Id is " + id);
+            String query = "SELECT question FROM javaquestions where qid = " + id;
+            Console.WriteLine(query);
+            MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
+            String str = "";
+            if (dataReader.Read())
+            {
+                str = dataReader.GetString(0);
+            }
+            dataReader.Close();
+            return str;
         }
 
         public void UpdatePriority(int qid)
@@ -150,12 +181,15 @@ namespace QuestionPaperGenerator
                 id = reader.GetInt32(0);
                 Console.WriteLine("Id: " + id);
             }
-            else
-            {
-
-            }
             reader.Close();
             return null;
+        }
+
+        static void Main()
+        {
+            QuestionFetcher qf = new QuestionFetcher();
+            qf.GetRandomQuestion(1, 4);
+            Console.Read();
         }
 
         //Variable declarations
@@ -163,6 +197,7 @@ namespace QuestionPaperGenerator
         private Random random;
         private ChapterWeightage chapterWeightage = null;
         private Dictionary<int, int> priorityWithId = null;
+        private List<int> questions = null;
         //End of variable declarations
     }
 }
