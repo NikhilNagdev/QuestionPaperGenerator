@@ -20,6 +20,8 @@ namespace QuestionPaperGenerator
             chapterWeightage = new ChapterWeightage();
             priorityWithId = new Dictionary<int, int>();
             questions = new List<int>();
+            String query = "UPDATE javaquestions SET priority = priority + 1  WHERE priority < 10";
+            new MySqlCommand(query, databaseConnection).ExecuteNonQuery();
         }
 
         /*---------------------------------------------------------------------------------------------------
@@ -87,11 +89,11 @@ namespace QuestionPaperGenerator
             //Console.WriteLine(GetFirstQuestionId(chapterNo, marks) + "     " + (GetLastQuestionId(chapterNo, marks) + 1) + "     " + id);
             //id = random.Next(GetFirstQuestionId(chapterNo, marks), GetLastQuestionId(chapterNo, marks)+1);
             //int id1 = GetFirstQuestionId(chapterNo, marks) + (int)Math.Round(random.NextDouble() * (GetLastQuestionId(chapterNo, marks)- GetFirstQuestionId(chapterNo, marks)));
-            String query = "SELECT * FROM javaquestions WHERE chapterNo = " + chapterNo + " AND marks = " + marks + " AND priority = 10";
+            String query = "SELECT * FROM javaquestions WHERE chapterNo = " + chapterNo + " AND marks = " + marks;
             MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
             String str = "";
             try
-            {                
+            {
                 while (dataReader.Read())
                 {
                     Console.WriteLine("QUESTION ID: " + dataReader.GetInt32(0));
@@ -106,9 +108,47 @@ namespace QuestionPaperGenerator
             while(i <= 10){
                 Console.WriteLine(priorityWithId[i++]);
             }*/
-            UpdatePriority(id);
             str = GetQuestion(priorityWithId);
             priorityWithId = new Dictionary<int, int>();
+            return str;
+        }
+
+        public String GetQuestion(Dictionary<int, int> priorityId)
+        {
+            List<int> qid = new List<int>();
+            foreach (int s in priorityId.Keys)
+            {
+                qid.Add(s);
+                Console.WriteLine("QID: " + s);
+            }
+            KeyValuePair<int, int> bestMatch = priorityId.OrderBy(e => Math.Abs(e.Value - 10)).FirstOrDefault();
+            Console.WriteLine(" best "  + bestMatch);
+            int i = 0, id = 0;
+            /*while (i < qid.Count)
+            {
+                if (priorityId[qid[i]] == 10)
+                {
+                    id = priorityId[qid[i]];
+                }
+                else if(priorityId[qid[i]] == 9)
+                {
+
+                }
+                i++;
+            }*/
+            //int id = qid[random.Next(0, qid.Count)];
+            id = bestMatch.Key;
+            UpdatePriority(id);
+            Console.WriteLine("Id is " + id);
+            String query = "SELECT question FROM javaquestions where qid = " + id;
+            Console.WriteLine(query);
+            MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
+            String str = "";
+            if (dataReader.Read())
+            {
+                str = dataReader.GetString(0);
+            }
+            dataReader.Close();
             return str;
         }
 
@@ -142,30 +182,9 @@ namespace QuestionPaperGenerator
             return id;
         }*/
 
-        public String GetQuestion(Dictionary<int, int> priorityId)
-        {
-            List<int> qid = new List<int>();
-            foreach(int s in priorityWithId.Keys)
-            {
-                qid.Add(s);
-            }
-            int id = qid[random.Next(0, qid.Count)];
-            Console.WriteLine("Id is " + id);
-            String query = "SELECT question FROM javaquestions where qid = " + id;
-            Console.WriteLine(query);
-            MySqlDataReader dataReader = new MySqlCommand(query, databaseConnection).ExecuteReader();
-            String str = "";
-            if (dataReader.Read())
-            {
-                str = dataReader.GetString(0);
-            }
-            dataReader.Close();
-            return str;
-        }
-
         public void UpdatePriority(int qid)
         {
-            String query = "UPDATE javaquestions SET priority = priority - 1 WHERE qid = " + qid ;
+            String query = "UPDATE javaquestions SET priority = 0 WHERE qid = " + qid ;
             new MySqlCommand(query, databaseConnection).ExecuteNonQuery();
         }
         

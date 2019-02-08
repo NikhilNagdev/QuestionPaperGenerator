@@ -21,6 +21,7 @@ namespace QuestionPaperGenerator
 
         static void Main()
         {
+            
             GenerateQuestions gq = new GenerateQuestions();
             gq.GenerateRandomQuestions(4, 14);
             Console.Read();
